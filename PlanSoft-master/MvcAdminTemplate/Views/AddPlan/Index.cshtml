@@ -1,0 +1,766 @@
+﻿@model MvcAdminTemplate.Models.AttributesViewModel
+
+@{
+    ViewBag.Title = "AddPlan";
+}
+@Html.Partial("_LeftMenuAddPlan")
+
+
+
+
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<style>
+    <!-- Progress with steps -->
+    ol.progtrckr {
+        margin: 0;
+        padding: 0;
+        list-style-type: none;
+        width: 15%;
+    }
+
+    ol.progtrckr li {
+        display: inline-block;
+        text-align: center;
+        line-height: 3em;
+    }
+
+    ol.progtrckr[data-progtrckr-steps="2"] li {
+        width: 49%;
+    }
+
+    ol.progtrckr[data-progtrckr-steps="3"] li {
+        width: 33%;
+    }
+
+    ol.progtrckr[data-progtrckr-steps="4"] li {
+        width: 24%;
+    }
+
+    ol.progtrckr[data-progtrckr-steps="5"] li {
+        width: 19%;
+    }
+
+    ol.progtrckr[data-progtrckr-steps="6"] li {
+        width: 16%;
+    }
+
+    ol.progtrckr[data-progtrckr-steps="7"] li {
+        width: 14%;
+    }
+
+    ol.progtrckr[data-progtrckr-steps="8"] li {
+        width: 12%;
+    }
+
+    ol.progtrckr[data-progtrckr-steps="9"] li {
+        width: 11%;
+    }
+
+    ol.progtrckr li.progtrckr-done {
+        color: black;
+        border-bottom: 4px solid yellowgreen;
+    }
+
+    ol.progtrckr li.progtrckr-todo {
+        color: silver;
+        border-bottom: 4px solid silver;
+    }
+
+    ol.progtrckr li.progtrckr-inprog {
+        color: black;
+        border-bottom: 4px solid blue;
+    }
+
+    ol.progtrckr li:after {
+        content: "\00a0\00a0";
+    }
+
+    ol.progtrckr li:before {
+        position: relative;
+        bottom: -2.5em;
+        float: left;
+        left: 50%;
+        line-height: 1em;
+    }
+
+    ol.progtrckr li.progtrckr-done:before {
+        content: "\2713";
+        color: white;
+        background-color: yellowgreen;
+        height: 1.2em;
+        width: 1.2em;
+        line-height: 1.2em;
+        border: none;
+        border-radius: 1.2em;
+    }
+
+    ol.progtrckr li.progtrckr-todo:before {
+        content: "\039F";
+        color: silver;
+        background-color: white;
+        font-size: 1.5em;
+        bottom: -1.6em;
+    }
+    /*Styles for Dynamic Menu*/
+
+    .content {
+        width: 30%;
+        margin-left: 37%;
+    }
+
+    form {
+        width: 150%;
+    }
+
+    .regform {
+        width: 150%;
+        padding-top: 7%;
+        margin-left: -60%;
+    }
+
+    .main {
+        float: left;
+        width: 120%;
+    }
+
+    .title {
+        font-size: 150%;
+        text-align: left;
+    }
+
+    #progressbar {
+        margin: 0;
+        padding: 0;
+        font-size: 150%;
+        background: none;
+        width: -120%;
+    }
+
+    .active {
+        color: #1e048d;
+    }
+
+    fieldset {
+        display: none;
+        width: 50%;
+        padding: 0;
+    }
+
+    #first {
+        display: block;
+        padding: 20px;
+        margin-right: -30%;
+        border-radius: 5px;
+    }
+
+    input[type=text],
+    input[type=password],
+    select {
+        padding: 10px;
+        border: none;
+        border-bottom: solid 2px #c9c9c9;
+        transition: border 0.3s;
+        background-color: rgba(245, 245, 245, 0.498039);
+    }
+
+
+
+    input[type=submit],
+    input[type=button] {
+        width: 30%;
+        margin: 15px 25px;
+        padding: 5px;
+        height: 40px;
+        background-color: #65acf5;
+        border: none;
+        border-radius: 4px;
+        font-family: 'Droid Serif', serif;
+    }
+
+    li.progress {
+        margin-right: 52px;
+        display: inline;
+        color: #000000;
+        font-family: 'Droid Serif', serif;
+    }
+</style>
+<script>
+    var taskNo = 0;
+    var arr = [];
+
+    $(document).ready(function () {
+        var count = 0; // To Count Blank Fields
+        /*------------ Validation Function-----------------*/
+        $(".submit_btn").click(function (event) {
+            /*
+            var radio_check = $('.rad'); // Fetching Radio Button By Class Name
+            var input_field = $('.text_field'); // Fetching All Inputs With Same Class Name text_field & An HTML Tag textarea
+            var text_area = $('textarea');
+            // Validating Radio Button
+            if (radio_check[0].checked == false && radio_check[1].checked == false) {
+                var y = 0;
+            } else {
+                var y = 1;
+            }
+            // For Loop To Count Blank Inputs
+            for (var i = input_field.length; i > count; i--) {
+                if (input_field[i - 1].value == '' || text_area.value == '') {
+                    count = count + 1;
+                } else {
+                    count = 0;
+                }
+            }
+            // Notifying Validation
+            if (count != 0 || y == 0) {
+                alert("*All Fields are mandatory*");
+                event.preventDefault();
+            } else {
+                return true;
+            }
+            */
+        });
+        /*---------------------------------------------------------*/
+        //$(".next_btn").click(function () { // Function Runs On NEXT Button Click
+            //$(this).parent().next().fadeIn('slow');
+            //$(this).parent().css({
+                //'display': 'none'
+            //});
+            //// Adding Class Active To Show Steps Forward;
+            //$('.active').next().addClass('active');
+        //});
+        $(".pre_btn").click(function () { // Function Runs On PREVIOUS Button Click
+            $(this).parent().prev().fadeIn('slow');
+            $(this).parent().css({
+                'display': 'none'
+            });
+            // Removing Class Active To Show Steps Backward;
+            $('.active:last').removeClass('active');
+        });
+        // Validating All Input And Textarea Fields
+        $(".submit_btn").click(function (e) {
+            if ($('input').val() == "" || $('textarea').val() == "") {
+                alert("*All Fields are mandatory*");
+                return false;
+            } else {
+                return true;
+            }
+        });
+
+        var str = getLayoutStr(taskNo);
+
+
+    });
+
+    $("body").on("click", ".next_btn", nextBtn);
+    $("body").on("click", ".pre_btn", preBtn);
+    $("body").on("click", ".submit_btn", subBtn);
+
+
+
+    function nextBtn()
+    {
+        // Function Runs On NEXT Button Click
+        $(this).parent().next().fadeIn('slow');
+        $(this).parent().css({
+            'display': 'none'
+        });
+        // Adding Class Active To Show Steps Forward;
+        $('.active').next().addClass('active');
+
+    }
+
+    function preBtn() {
+        // Function Runs On PREVIOUS Button Click
+        $(this).parent().prev().fadeIn('slow');
+        $(this).parent().css({
+            'display': 'none'
+        });
+        // Removing Class Active To Show Steps Backward;
+        $('.active:last').removeClass('active');
+
+    }
+
+    function subBtn()
+    {
+        var vars = "";
+        //get data
+        $(".attribVars").each(function () {
+            
+                //get attribute
+                var attrib = $(this).prev().prev().html();
+
+                vars += "|" + attrib.trim() + ":" + $(this).val();
+            
+            
+        });
+        //Validate data...eventually
+
+        //Save data
+        var data = JSON.stringify(arr);
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("saveToDB", "AddPlan")',
+            data: JSON.stringify({ data: vars, myPlan: $(".elementVars").val() }),
+            dataType: 'text',
+            contentType: "application/json; charset=utf-8",
+            success: function (attribute) {
+
+            },
+            error: function () {
+                alert('Failed to store data.');
+            }
+        });
+
+
+        //Update progress tracker
+
+        $(".progtrckr-todo").eq(taskNo).css("border-bottom", "4px solid yellowgreen");
+        $(".progtrckr-todo").eq(taskNo + 1).css("color", "black");
+        $(".progtrckr-todo").eq(taskNo + 1).css("border-bottom", "4px solid blue");
+
+        ////Graveyard of other functions that would have been easier but break shit for no reason////
+        //$("ol li:nth-child(" + taskNo + ")").css("border-bottom", "4px solid yellowgreen");
+        //$("#progtracker").index(taskNo+1).css("border-bottom", "4px solid blue");
+        //$(".progtrckr-inprog").next.removeClass("progtrckr-todo");
+        //$(".progtrckr-inprog").next.addClass("progtrckr-inprog");
+        //currentTask.removeClass("progtrckr-inprog");
+        //currentTask.addClass("progtrckr-done");
+        //currentTask.next.removeClass("progtrckr-todo");
+        //currentTask.next.addClass("progtrckr-inprog");
+
+        //set to next task
+        taskNo += 1;
+        populateAttribs(arr, taskNo);
+        populateSubtask(arr, taskNo);
+        //getLayoutStr(taskNo);
+        //$.holdReady(true);
+
+
+
+    }
+
+    //get layout string from controller, call parse string with task number to display
+    function getLayoutStr(num) {
+        var str = ""
+        $.ajax({
+            cache: false,
+            type: "GET",
+            url: '@Url.Action("getLayoutStr", "AddPlan")',
+            dataType: 'json',
+            success: function (layoutStr) {
+                var str = JSON.stringify(layoutStr);
+                arr = parseLayoutStr(str, num);
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert('Failed to retrieve data.');
+            }
+        });
+        return str;
+    }
+
+    //Parses layout str and does initial setup of page
+    function parseLayoutStr(str, num) {
+        var data = str.split(" TASK:")
+        var arr = []
+
+        //build master array -- messy
+        //For each task
+        for(i = 1; i < data.length; i++)
+        {
+            //For each attribute
+            for(j = 0; j < (data[i].split(" ATTRIBUTE:").length -1);j++)
+            {
+                //index of attribute is jth index of "ATTRIBUTE"
+                var attribIndex = nthIndexOf(data[i], "ATTRIBUTE:", j);
+                //Attribute is string[attribIndex, jth index of "\n"]
+                attrib = data[i].slice(attribIndex + 10, data[i].indexOf("\\n", nthIndexOf(data[i], "ATTRIBUTE", j)));
+                //string parsing spagetti
+                subtask = data[i].slice(data[i].lastIndexOf("SUBTASK:", data[i].indexOf(attrib)) +8, data[i].indexOf("\\n", data[i].indexOf("\\n", data[i].lastIndexOf("SUBTASK:", data[i].indexOf(attrib)))));
+                //task is from string[0] to string.firstindexof(\n)
+                task = data[i].slice(0, data[i].indexOf("\\n"));
+                //push array of task, subtask, attrib to arr
+                arr.push([task, subtask, attrib]);
+            }
+        }
+
+        //array of just tasks, just subtasks
+        var taskArr = [];
+        for (i = 0; i < arr.length; i++)
+        {
+            if (taskArr.indexOf(arr[i][0]) == -1)
+            {
+                taskArr.push(arr[i][0]);
+            }
+        }
+
+        //setup tasks
+        setProgtrackr(taskArr);
+
+        //populate subtask heads
+        populateSubtask(arr, num);
+
+        //populate attributes inputs
+        populateAttribs(arr,num);
+
+
+        //return arr (to where?)
+        return arr;
+    }
+
+    function populateAttribs(arr, taskNo)
+    {
+
+        subtaskArr = getSubtaskList(arr, taskNo);
+
+        //collect names of attributes by subtask
+        var htmlStr = "";
+
+        //For each subtask, create fieldset
+        for (i = 0; i < subtaskArr.length; i++)
+        {
+            //if first subtask in task, subtask is "first"
+            if (i == 0)
+            {
+                htmlStr += "<fieldset id=\"first\" style=\"display:block\">";
+            }
+                //else is normal fieldset
+            else htmlStr += "<fieldset>";
+
+            //for each attribute
+            for (j = 0; j < arr.length; j++)
+            {
+                //if attribute in subtask
+                if (arr[j][1] == subtaskArr[i])
+                {
+                    //put attrib name, attrib datainput, populate datainput with attrib vars
+                    htmlStr += "<label id=\"" + arr[j][2] + "\" class=\"attribVarLabel\"> " + arr[j][2] + "</label><br />";
+                    //dummy data
+                    htmlStr += "<select class=\"options attribVars \"> \
+                                <option>--Funding Approach--</option> \
+                                <option>Post Graduate</option> \
+                                <option>Graduate</option> \
+                                <option>HSC</option> \
+                                <option>SSC</option> \
+                            </select><br />";
+                }
+
+
+            }
+
+
+            //If only one subtask, just hav sub btn
+            if (subtaskArr.length == 1)
+            {
+                htmlStr += "<input class=\"submit_btn\" type=\"submit\" value=\"Submit\">";
+            }
+            //If first subtask, add only next button,
+            else if (i == 0) {
+                htmlStr += "<input class=\"next_btn\" name=\"next\" type=\"button\" value=\"Next\">";
+            }
+            //If last subtask, add prev and sub btn
+            else if (i == subtaskArr.length - 1) {
+                htmlStr += "<input class=\"pre_btn\" name=\"previous\" type=\"button\" value=\"Previous\">";
+                htmlStr += "<input class=\"submit_btn\" type=\"submit\" value=\"Submit\">";
+            }
+            //Otherwise add prev and next btn
+            else {
+                htmlStr += "<input class=\"pre_btn\" name=\"previous\" type=\"button\" value=\"Previous\">";
+                htmlStr += "<input class=\"next_btn\" name=\"next\" type=\"button\" value=\"Next\">";
+            }
+
+            //close subtask
+            htmlStr += "</fieldset>";
+        }
+        //set content of fieldsets to htmlstr
+        $("#fieldsets").html(htmlStr);
+
+        populateAttributeVars();
+    }
+
+    //get nth index of substring in string
+    function nthIndexOf(string, substring, n)
+    {
+        var i = 0;
+        var index = 0;
+        while( i <= n)
+        {
+            index = string.indexOf(substring, index+1);
+            i++;
+        }
+        return index;
+    }
+
+    function setProgtrackr(tasks) {
+        //String to hold tracker bars
+        var str = "";
+        for (i = 0; i < tasks.length; i++)
+        {
+            if (i == 0)
+            {
+                //If first tracker, make it in progress
+                str += "<li class=\"progtrckr-todo\" style=\"width:15%\">" + tasks[i] + "</li>";
+            }
+            ///Otherwise todo
+            else str += "<li class=\"progtrckr-todo\" style=\"width:15%\">" + tasks[i] + "</li>";
+        }
+        //Set progtrckr content to str
+        $(".progtrckr").html(str);
+        //Set steps attribute to # of tasks
+        var tracker = document.getElementById("progtracker");
+        tracker.setAttribute("data-progtrckr-steps", tasks.length);
+        //set first task to blue
+        $(".progtrckr-todo").eq(taskNo).css("color", "black");
+        $(".progtrckr-todo").eq(taskNo).css("border-bottom", "4px solid blue");
+    }
+
+    //Builds subtask tabs given main data arr, and task number
+    function populateSubtask(arr, num)
+    {
+        var htmlStr = ""
+
+        //get list of all tasks
+        tasks = getTasksList(arr);
+
+        //get subtasks under tasks[num] (under current task)
+        var subtasks = []
+        for (i = 0; i < arr.length; i++)
+        {
+            if (arr[i][0] == tasks[num] && subtasks.indexOf(arr[i][1]) == -1)
+            {
+                subtasks.push(arr[i][1]);
+            }
+        }
+        for (i = 0; i < subtasks.length; i++)
+        {
+            //populate subtask labels
+            if (i == 0)
+            {
+                htmlStr += "<li class=\"active\" style=\"display:inline; padding:10%;\">" + subtasks[i] + "</li>";
+            }
+            else
+            {
+                htmlStr += "<li style=\"display:inline; padding:10%;\">" + subtasks[i] + "</li>";
+            }
+
+        }
+
+        $("#progressbar").html(htmlStr);
+    }
+
+    function getTasksList(arr)
+    {
+        var taskArr = [];
+        for (i = 0; i < arr.length; i++)
+        {
+            if (taskArr.indexOf(arr[i][0]) == -1)
+            {
+                taskArr.push(arr[i][0]);
+            }
+        }
+
+        return taskArr;
+    }
+
+    //Given master array and task no, return array of all subtasks belonging to that task
+    function getSubtaskList(arr, num)
+    {
+        var subtasks = []
+        for (i = 0; i < arr.length; i++)
+        {
+            if (arr[i][0] == tasks[num] && subtasks.indexOf(arr[i][1]) == -1)
+            {
+                subtasks.push(arr[i][1]);
+            }
+        }
+
+        return subtasks;
+    }
+
+        $.ajax({
+            cache: false,
+            type: "GET",
+            url: '@Url.Action("DropDownElementVars", "AddPlan")',
+            dataType: 'json',
+            success: function (element) {
+                var items = '';
+                var obj = '';
+                $.each(element, function (i, word) {
+                    $.each(word, function (i, obj) {
+                        items += "<option>" + obj + "</option>";
+                    });
+                });
+
+                $(".elementVars").each(function () {
+                    var temp = $(this).html()
+                    if (temp != items) {
+                        $(this).html(items);
+                    }
+
+                });
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert('Failed to retrieve data.');
+            }
+        });
+
+    function populateAttributeVars() {
+        $.ajax({
+            cache: false,
+            type: "GET",
+            url: '@Url.Action("DropDownAttributeVars", "AddPlan")',
+            dataType: 'json',
+            success: function (arrays) {
+                var items = '';
+                var obj = '';
+                /*
+                $.each(attribute, function (i, word) {
+                    $.each(word, function (i, obj) {
+                        items += "<option>" + obj + "</option>";
+                    });
+                });
+                */
+
+                $(".attribVarLabel").each(function () {
+                    var attrib = $(this).text().trim();
+                    var aCode = 0;
+                    var inputType = "";
+                    for(var i = 0; i < arrays.attribute.length; i++)
+                    {
+                        if(attrib == arrays.attribute[i].Name)
+                        {
+                            aCode = arrays.attribute[i].Code;
+                            inputType = arrays.attribute[i].Input;
+                        }
+                    }
+
+                    options = "";
+                    for (var i = 0; i < arrays.attributeVar.length; i++)
+                    {
+                        if (aCode == arrays.attributeVar[i].ACode)
+                        {
+                            options += "<option>" + arrays.attributeVar[i].Name + "</option>"
+                        }
+                    }
+
+                    if (inputType == "Dropdown")
+                    {
+                        $(this).next().next().html(options);
+                    }
+                    else $(this).next().next().replaceWith("<input class=attribVars />");
+
+
+
+
+                });
+
+                /*
+                $(".attribVars").each(function () {
+                    var temp = $(this).html()
+                    if (temp != items) {
+                        $(this).html(items);
+                    }
+
+                });
+                */
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert('Failed to retrieve data.');
+            }
+        });
+    }
+
+
+</script>
+<label>Plan Name:</label>
+<select class="elementVars"></select>
+<div>
+    <ol class="progtrckr" id="progtracker" data-progtrckr-steps="8">
+        <li class="progtrckr-done">Plan Description</li>
+        <li class="progtrckr-todo">Plan Design</li>
+        <li class="progtrckr-todo">Distribution</li>
+        <li class="progtrckr-todo">Regulation</li>
+        <li class="progtrckr-todo">Accounting</li>
+        <li class="progtrckr-todo">Governance</li>
+        <li class="progtrckr-todo">Evaluation</li>
+    </ol>
+</div>
+<div class="content">
+    <!-- Multistep Form -->
+    <div class="main">
+        <form action="" class="regform" method="get">
+            <!-- Progress Bar-->
+            <ul id="progressbar" style="margin-right:150%;color:#c1c5cc;font-family: 'Droid Serif', serif;list-style-type:none; margin:0; padding:0;">
+                <li class="active" style="display:inline; padding:10%;">Funding</li>
+                <li style="display:inline; padding:10%;">Metrics</li>
+                <li style="display:inline; padding:10%;">Approach</li>
+            </ul>
+
+            <div id="fieldsets">
+            </div>
+            <!-- Fieldsets -->
+            <!--
+            <fieldset id="first" style="display:block">
+
+                <select class="options">
+                    <option>--Funding Approach--</option>
+                    <option>Post Graduate</option>
+                    <option>Graduate</option>
+                    <option>HSC</option>
+                    <option>SSC</option>
+                </select><br />
+                <input class="text_field" name="email" placeholder="List Funding Components" type="text"><br />
+                <select class="options">
+                    <option>--Funding Level--</option>
+                    <option>Post Graduate</option>
+                    <option>Graduate</option>
+                    <option>HSC</option>
+                    <option>SSC</option>
+                </select><br />
+                <select class="options">
+                    <option>--Funding Mechanism--</option>
+                    <option>Post Graduate</option>
+                    <option>Graduate</option>
+                    <option>HSC</option>
+                    <option>SSC</option>
+                </select><br />
+                <select class="options">
+                    <option>--Pool Funding Mechanism--</option>
+                    <option>Post Graduate</option>
+                    <option>Graduate</option>
+                    <option>HSC</option>
+                    <option>SSC</option>
+                </select><br />
+                <input class="text_field" name="email" placeholder="Target Funding Basis" type="text">
+                <input class="text_field" name="email" placeholder="Funding Threshold" type="text">
+                <textarea rows="4" cols="50" name="comment" placeholder="Funding Comment" form="usrform" style="background-color:rgba(245, 245, 245, 0.498039);border:none; border-bottom: solid 2px #c9c9c9;"></textarea>
+                <input class="next_btn" name="next" type="button" value="Next">
+            </fieldset>
+            <fieldset>
+
+                <select class="options">
+                    <option>--Select Education--</option>
+                    <option>Post Graduate</option>
+                    <option>Graduate</option>
+                    <option>HSC</option>
+                    <option>SSC</option>
+                </select>
+                <input class="text_field" name="marks" placeholder="Marks Obtained" type="text">
+                <input class="text_field" name="pyear" placeholder="Passing Year" type="text">
+                <input class="text_field" name="univ" placeholder="University" type="text">
+                <input class="pre_btn" name="previous" type="button" value="Previous">
+                <input class="next_btn" name="next" type="button" value="Next">
+            </fieldset>
+            <fieldset>
+
+
+                <input class="text_field" name="fname" placeholder="First Name" type="text">
+                <input class="text_field" name="lname" placeholder="Last Name" type="text">
+                <input class="text_field" name="cont" placeholder="Contact" type="text">
+
+                <input class="pre_btn" type="button" value="Previous">
+                <input class="submit_btn" type="submit" value="Submit">
+            </fieldset>
+            -->
+        </form>
+    </div>
+</div>

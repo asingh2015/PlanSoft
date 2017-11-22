@@ -1,0 +1,67 @@
+﻿@{
+    MvcAdminTemplate.Models.PlanDetails eligibility = (from pd in Model.planDetails where pd.Attribute == "Eligibility Basis" select pd).FirstOrDefault();
+    MvcAdminTemplate.Models.PlanDetails planOwnership = (from pd in Model.planDetails where pd.Attribute == "Plan Ownership" select pd).FirstOrDefault();
+    MvcAdminTemplate.Models.PlanDetails ACompliance = (from pd in Model.planDetails where pd.Attribute == "409A Compliance" select pd).FirstOrDefault();
+    MvcAdminTemplate.Models.PlanDetails DiscretionAuthorityLevel = (from pd in Model.planDetails where pd.Attribute == "Discretion Authority Level" select pd).FirstOrDefault();
+    MvcAdminTemplate.Models.PlanDetails DoddFrankCompliance = (from pd in Model.planDetails where pd.Attribute == "Dodd-Frank Compliance" select pd).FirstOrDefault();
+    MvcAdminTemplate.Models.PlanDetails FundingApproach = (from pd in Model.planDetails where pd.Attribute == "Funding Approach" select pd).FirstOrDefault();
+    MvcAdminTemplate.Models.PlanDetails FundingLevel = (from pd in Model.planDetails where pd.Attribute == "Funding Level" select pd).FirstOrDefault();
+    MvcAdminTemplate.Models.PlanDetails LevelofDiscretion = (from pd in Model.planDetails where pd.Attribute == "Level of Discretion" select pd).FirstOrDefault();
+    MvcAdminTemplate.Models.PlanDetails LineofBusiness = (from pd in Model.planDetails where pd.Attribute == "Line of Business" select pd).FirstOrDefault();
+    MvcAdminTemplate.Models.PlanDetails ManagementDiscretion = (from pd in Model.planDetails where pd.Attribute == "Management Discretion" select pd).FirstOrDefault();
+    MvcAdminTemplate.Models.PlanDetails OrganizationalLinkage = (from pd in Model.planDetails where pd.Attribute == "Organizational Linkage" select pd).FirstOrDefault();
+    MvcAdminTemplate.Models.PlanDetails PerformanceDrivers = (from pd in Model.planDetails where pd.Attribute == "Performance Drivers" select pd).FirstOrDefault();
+    MvcAdminTemplate.Models.PlanDetails PlanDocument = (from pd in Model.planDetails where pd.Attribute == "Plan Document" select pd).FirstOrDefault();
+    MvcAdminTemplate.Models.PlanDetails PlanDocumentSignatures = (from pd in Model.planDetails where pd.Attribute == "Plan Document Signatures" select pd).FirstOrDefault();
+    MvcAdminTemplate.Models.PlanDetails PlanOwnership = (from pd in Model.planDetails where pd.Attribute == "Plan Ownership" select pd).FirstOrDefault();
+    MvcAdminTemplate.Models.PlanDetails PlanStatus = (from pd in Model.planDetails where pd.Attribute == "Plan Status" select pd).FirstOrDefault();
+    MvcAdminTemplate.Models.PlanDetails PlanSummary = (from pd in Model.planDetails where pd.Attribute == "Plan Summary" select pd).FirstOrDefault();
+    MvcAdminTemplate.Models.PlanDetails PlanType = (from pd in Model.planDetails where pd.Attribute == "Plan Type" select pd).FirstOrDefault();
+    MvcAdminTemplate.Models.PlanDetails PoolAllocationMechanism = (from pd in Model.planDetails where pd.Attribute == "Pool Allocation Mechanism" select pd).FirstOrDefault();
+    MvcAdminTemplate.Models.PlanDetails PrimaryPayoutApproach = (from pd in Model.planDetails where pd.Attribute == "Primary Payout Approach" select pd).FirstOrDefault();
+    MvcAdminTemplate.Models.PlanDetails QualityDrivers = (from pd in Model.planDetails where pd.Attribute == "Quality Drivers" select pd).FirstOrDefault();
+    MvcAdminTemplate.Models.PlanDetails RegRCompliance = (from pd in Model.planDetails where pd.Attribute == "Reg R Compliance" select pd).FirstOrDefault();
+    MvcAdminTemplate.Models.PlanDetails RoleType = (from pd in Model.planDetails where pd.Attribute == "Role Type" select pd).FirstOrDefault();
+    MvcAdminTemplate.Models.PlanDetails TARPCompliance = (from pd in Model.planDetails where pd.Attribute == "TARP Compliance" select pd).FirstOrDefault();
+
+}
+
+@*
+          Plan Creation Dat:                @Model.planDetails[0].creationDate
+          Address:                          @Model.planDetails[0].Address
+          City:                             @Model.planDetails[0].City
+          State:                            @Model.planDetails[0].State
+          Organization:                     @Model.planDetails[0].orgName
+          Plan Type:                        @Model.planDetails[0].PlanName
+      -----------------------------------------------------------------
+          Eligibility Basis:                @Html.DisplayFor(modelItem => eligibility.AttributeSelection)
+          Plan Ownership:                   @Html.DisplayFor(modelItem => planOwnership.AttributeSelection)
+          409A Compliance:                  @Html.DisplayFor(modelItem => ACompliance.AttributeSelection)
+          Discretion Authority Level:       @Html.DisplayFor(modelItem => DiscretionAuthorityLevel.AttributeSelection)
+          Dodd Frank Compliance:            @Html.DisplayFor(modelItem => DoddFrankCompliance.AttributeSelection)
+          Funding Approach:                 @Html.DisplayFor(modelItem => FundingApproach.AttributeSelection)
+          Level of Discretion:              @Html.DisplayFor(modelItem => LevelofDiscretion.AttributeSelection)
+          Line of Business:                 @Html.DisplayFor(modelItem => LineofBusiness.AttributeSelection)
+          Management Discretion:            @Html.DisplayFor(modelItem => ManagementDiscretion.AttributeSelection)
+          Organizational Linkage:           @Html.DisplayFor(modelItem => OrganizationalLinkage.AttributeSelection)
+          Performance Drivers:              @Html.DisplayFor(modelItem => PerformanceDrivers.AttributeSelection)
+          Plan Document:                    @Html.DisplayFor(modelItem => PlanDocument.AttributeSelection)
+          Plan Document Signatures:         @Html.DisplayFor(modelItem => PlanDocumentSignatures.AttributeSelection)
+          Plan Ownership:                   @Html.DisplayFor(modelItem => PlanOwnership.AttributeSelection)
+          Plan Status:                      @Html.DisplayFor(modelItem => PlanStatus.AttributeSelection)
+          Plan Summary:                     @Html.DisplayFor(modelItem => PlanSummary.AttributeSelection)
+          Plan Type:                        @Html.DisplayFor(modelItem => PlanType.AttributeSelection)
+          Pool Allocation Mechanism:        @Html.DisplayFor(modelItem => PoolAllocationMechanism.AttributeSelection)
+          Primary Payout Approach:          @Html.DisplayFor(modelItem => PlanStatus.AttributeSelection)
+          Quality Drivers:                  @Html.DisplayFor(modelItem => QualityDrivers.AttributeSelection)
+          Reg R Compliance:                 @Html.DisplayFor(modelItem => RegRCompliance.AttributeSelection)
+          Role Type:                        @Html.DisplayFor(modelItem => RoleType.AttributeSelection)
+          TARP Compliance:                  @Html.DisplayFor(modelItem => TARPCompliance.AttributeSelection)
+
+
+           Below is normal HTML note how I use the above tags, you can pretty much copy and paste everything after @html from above and it will pull that
+    information from the database appropriately, we wont use some of these tags but I wanted to set it up for everything.    *@
+<hr />
+
+<h1> This is a Template </h1>
+<p> this is some text that will be kept in an initial paragraph stuff like Hello this is a @Model.planDetails[0].PlanName plan and it is for @Model.planDetails[0].orgName </p>

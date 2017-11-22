@@ -1,0 +1,441 @@
+﻿@{
+    ViewBag.Title = "ElementsVariables";
+}
+@Html.Partial("_LeftMenu")
+
+<link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.13/css/jquery.dataTables.css">
+<link rel="stylesheet" type="text/css" href="//cdn.datatables.net/buttons/1.2.4/css/buttons.dataTables.min.css" />
+<link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css" />
+
+@section Scripts{
+<script type="text/javascript" charset="utf8" src="//cdn.datatables.net/1.10.13/js/jquery.dataTables.js"></script>
+<script type="text/javascript" charset="utf8" src="//cdn.datatables.net/buttons/1.2.4/js/dataTables.buttons.min.js"></script>
+<script type="text/javascript" charset="utf8" src="//cdn.datatables.net/buttons/1.2.4/js/buttons.flash.min.js"></script>
+<script type="text/javascript" charset="utf8" src="//cdnjs.cloudflare.com/ajax/libs/jszip/2.5.0/jszip.min.js"></script>
+<script type="text/javascript" charset="utf8" src="//cdn.rawgit.com/bpampuch/pdfmake/0.1.24/build/pdfmake.min.js"></script>
+<script type="text/javascript" charset="utf8" src="//cdn.rawgit.com/bpampuch/pdfmake/0.1.24/build/vfs_fonts.js"></script>
+<script type="text/javascript" charset="utf8" src="//cdn.datatables.net/buttons/1.2.4/js/buttons.html5.min.js"></script>
+<script type="text/javascript" charset="utf8" src="//cdn.datatables.net/buttons/1.2.4/js/buttons.print.min.js"></script>
+<script type="text/javascript" charset="utf8" src="//cdn.datatables.net/buttons/1.2.4/js/buttons.colVis.min.js"></script>
+    <style>
+        .tooLong {
+            width: 100%;
+            padding: 3px;
+            box-sizing: border-box;
+        }
+
+        input {
+            outline: 0;
+            border-width: 0 0 .01em 0;
+            border-color: black;
+        }
+
+        input:focus {
+            border-color: lightblue;
+        }
+
+        #example tbody tr:hover{
+            background-color: #f1f1f1;
+        }
+
+        #example tbody tr{
+            background-color:#fafafa
+        }
+
+        #example tbody tr.odd > .sorting_1 {
+            background-color: #fafafa;
+        }
+
+        #example tbody tr.odd:hover > .sorting_1 {
+            background-color: #f1f1f1;
+        }
+    </style>
+    <script>
+        function drawTable()
+        {
+            dataTable = $('#example').dataTable({
+                destroy: true,
+                bProcessing: true,
+                sAjaxSource: '@Url.Action("LoadElements", "ElementsVariables")',
+                "columnDefs": [{
+                    "targets": -1,
+                    "data": null,
+                    "defaultContent": "<button class =\"glyphicon glyphicon-pencil edit\"></button> <button class =\"glyphicon glyphicon-trash delete\"></button>"
+                }],
+                dom: 'Bfrtip',
+                buttons: [
+                     {
+                         extend: 'excel',
+                         text:      '<i class="fa fa-file-excel-o"></i>',
+                         titleAttr: 'Excel',
+                         exportOptions: {
+                             columns: ':visible'
+                         }
+                     },
+                      {
+                          extend: 'csv',
+                          text:      '<i class="fa fa-file-text-o"></i>',
+                          titleAttr: 'CSV',
+                          exportOptions: {
+                              columns: ':visible'
+                          }
+                      },
+                      {
+                          extend: 'pdf',
+                          text:      '<i class="fa fa-file-pdf-o"></i>',
+                          titleAttr: 'PDF',
+                          exportOptions: {
+                              columns: ':visible'
+                          }
+                      },
+                      {
+                          extend: 'colvis',
+                          text: '<i class="fa fa-eye"></i>',
+                          titleAttr: "Columns"
+                      }
+            ]
+
+        });
+        return true;
+        }
+
+        $(document).ready(drawTable);
+
+        $(document).on("click", ".save", function () {
+            testStr = "([A-Za-z0-9])+"
+            var regex = new RegExp(testStr);
+            ruleCode = $("#ruleCode").val();
+            ruleName = $("#ruleName").val();
+            varCode = $("#varCode").val();
+            varName = $("#varName").val();
+            varCID = $("#varCID").val();
+            ruleCreator = $("#ruleCreator").val();
+            test1 = regex.test(ruleCode);
+            test2 = regex.test(ruleName);
+            test3 = regex.test(varCode);
+            test4 = regex.test(varName);
+            test5 = regex.test(varCID);
+            test6 = regex.test(ruleCreator);
+            if (!test1 || !test2 || !test3 || !test4 || !test5) {
+                $('#addmessage').html("Fields must not be empty or have special characters");
+                return false;
+            }
+
+            $.ajax({
+                url: "/ElementsVariables/Add",
+                datatype: "text",
+                data: { /*'EleCode': $('#eleCodes').val(), */'EleName': $('#ruleName').val(), 'varCode': $('#varCode').val(), 'varName': $('#varName').val(), 'varCID': $('#varCID').val(), 'Creator': $('#ruleCreator').val() },
+                type: "POST",
+                success: function (data) {
+                    $('#addmessage').html("");
+                    $('#myModal').modal('hide');
+                    drawTable();
+                    return true;
+                },
+                error: function () {
+                    return false;
+                }
+            });
+        });
+
+
+        $("tbody").on("click", ".edit", function () {
+            $('#editMessage').html("");
+            ID = $(this).closest("tr").children('td:eq(0)').text();
+            Name = $(this).closest("tr").children('td:eq(1)').text();
+            CID = $(this).closest("tr").children('td:eq(4)').text();
+            varCode = $(this).closest("tr").children('td:eq(2)').text();
+            varName = $(this).closest("tr").children('td:eq(3)').text();
+            $('#editModal').modal('show');
+            $("#updateCode").val(ID);
+            $("#updateEleName").val(Name);
+            $("#updateVarCID").val(CID);
+            $("#updateVarCode").val(varCode);
+            $("#updateVarName").val(varName);
+
+            $(document).on("click", ".update", function () {
+                testStr = "([A-Za-z0-9])+"
+                var regex = new RegExp(testStr);
+                test1 = regex.test($('#updateCode').val());
+                test2 = regex.test($('#updateEleName').val());
+                test3 = regex.test($('#updateVarCID').val());
+                test4 = regex.test($('#updateVarCode').val());
+                test5 = regex.test($('#updateVarName').val());
+                if (!test1 || !test2 || !test3 || !test4 || !test5) {
+                    $('#editMessage').html("Fields must not be empty or have special characters");
+                    return false;
+                }
+                $.ajax({
+                    url: "/ElementsVariables/Update",
+                    datatype: "text",
+                    data: { 'VarCode': varCode, 'NewVarName': $('#updateVarName').val(), 'NewVarCID': $('#updateVarCID').val(), 'NewVarCode': $('#updateVarCode').val() },
+                    type: "POST",
+                    success: function (data) {
+                        drawTable();
+                        $('#editModal').modal('hide');
+                        return true;
+                    },
+                    error: function () {
+                        return false;
+                    }
+                });
+            });
+        });
+
+
+
+        $("tbody").on("click", ".delete", function () {
+            delID = $(this).closest("tr").children('td:eq(2)').text();
+            $('#deleteModal').modal('show');
+        });
+        $(document).on("click", ".confirm", function () {
+        $.ajax({
+            url: "/ElementsVariables/Delete",
+            datatype: "text",
+            data: { 'EleCode': delID},
+            type: "POST",
+            success: function (data) {
+                drawTable();
+                return true;
+            },
+            error: function () {
+                return false;
+            }
+        });
+        });
+
+        $.ajax({
+            cache: false,
+            type: "GET",
+            url: '@Url.Action("DropDownElementCodes", "ElementsVariables")',
+            dataType: 'json',
+            success: function (code) {
+                console.log("Success");
+                var items = '';
+                var obj = '';
+                $.each(code, function (i, word) {
+                    $.each(word, function (i, obj) {
+                        items += "<option>" + obj + "</option>";
+                    });
+                });
+                console.log(items);
+                $("#eleCodes").html(items);
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert('Failed to retrieve data.');
+                console.log(thrownError);
+            }
+        });
+
+        $.ajax({
+            cache: false,
+            type: "GET",
+            url: '@Url.Action("DropDownElementNames", "ElementsVariables")',
+            dataType: 'json',
+            success: function (code) {
+                console.log("Success");
+                var items = '';
+                var obj = '';
+                $.each(code, function (i, word) {
+                    $.each(word, function (i, obj) {
+                        items += "<option>" + obj + "</option>";
+                    });
+                });
+                console.log(items);
+                $("#ruleName").html(items);
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert('Failed to retrieve data.');
+                console.log(thrownError);
+            }
+        });
+
+        $.ajax({
+            cache: false,
+            type: "GET",
+            url: '@Url.Action("firstNameLastName", "Home")',
+            dataType: 'json',
+            success: function (data) {
+                console.log(data.fname, data.lname);
+                $("#ruleCreator").html(data.fname + " " + data.lname);
+                $("#ruleCreator").val(data.fname + " " + data.lname);
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+            }
+        });
+
+        $(document).ready(function () {
+                $('tbody tr').addClass('visible');
+                $('thead tr th input:text').keyup(function (event) {
+                    if (event.keyCode == 27 || $(this).val() == '') {
+
+                        $('tbody tr td ').show();
+
+                    }
+                    else {
+                        for (var i = 1 ; i < 10 ; i++) {
+                            if ($("thead tr th:nth-child(" + i + ") input:text").val().length > 0) {
+                                var fn = filter("tbody>tr > :nth-child(" + i + ")", $(this).val());
+                            }
+                        }
+                    }
+                });
+            });
+
+            function filter(selector, query) {
+                var z = null;
+                query = $.trim(query);
+                query = query.replace(/ /gi, '|');
+                $(selector).each(function () {
+                    if ($(this).text().search(new RegExp(query, "i")) < 0) {
+                        $(this).siblings().hide();
+                        $(this).hide();
+                    }
+                    else {
+                        $(this).siblings().show();
+                        $(this).show();
+                    }
+                });
+            }
+    </script>
+
+}
+
+<!-- content -->
+
+<!--BEGIN SAVE MODAL-->
+<div id="myModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 id="myModalLabel" class="modal-title">Add Element Variable</h4>
+            </div>
+            <div class="modal-body">
+                <div id="addmessage"></div>
+                @*Element ID: <select id="eleCodes" style="display:inline-block; margin-left:6%;"></select>
+    <br />
+    <br />*@
+                Element Name: <select id="ruleName" style="display:inline-block; margin-left:1.5%;"></select>
+                <br />
+                <br />
+                Variable Name: <input id="varName"  style="display:inline-block; margin-left:1.5%;"/>
+                <br />
+                <br />
+                Variable CID: <input id="varCID" style="display:inline-block; margin-left:4%;"/>
+                <br />
+                <br />
+                Created By: <label id="ruleCreator" style="display:inline-block; margin-left:5.5%;"/>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" id="save" class="btn btn-primary save">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!--END MODAL-->
+<!--BEGIN EDIT MODAL-->
+<div id="editModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 id="myModalLabel" class="modal-title">Edit Element Variable</h4>
+            </div>
+            <div class="modal-body">
+                <div id="editMessage"></div>
+               <!-- Element Code: <input id="updateCode" />
+                <br />
+                Element Name: <input id="updateEleName" />
+                <br />
+                Variable Code: <input id="updateVarCode" />
+                <br />-->                
+                Variable CID: <input id="updateVarCID" />
+                <br />
+                Variable Name: <input id="updateVarName" />
+                <br />
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" id="update" class="btn btn-primary update">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!--END EDIT MODAL-->
+<!--BEGIN DELETE MODAL-->
+<div id="deleteModal" class="modal fade bs-example-modal-sm deleteModal" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-footer">
+                <h4 style="float:left" id="myModalLabel" class="modal-title">Confirm Delete</h4>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" id="confirm" class="btn btn-primary confirm" data-dismiss="modal">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!--END DELETE MODAL-->
+
+<div class="col-md-10"  style="margin-top:-1.3%;">
+    <div class="row">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <div class="text-muted bootstrap-admin-box-title">Element Variables Table</div>
+            </div>
+            <div class="bootstrap-admin-panel-content">
+                <table cellpadding="0" cellspacing="0" border="0" class="display" id="example">
+                    <thead>
+                        <tr>
+                            <th>
+                                Element Code
+                                <br />
+                                <input type="text" class="tooLong" name="filterfname" value="">
+                            </th>
+                            <th>
+                                Element Name
+                                <br />
+                                <input type="text" class="tooLong"  name="filterfname" value="">
+                            </th>
+                            <th>
+                                Variable Code
+                                <br />
+                                <input type="text" class="tooLong"  name="filterfname" value="">
+                            </th>
+                            <th>
+                                Variable Name
+                                <br />
+                                <input type="text" class="tooLong"  name="filterfname" value="">
+                            </th>
+                            <th>
+                                Variable CID
+                                <br />
+                                <input type="text" class="tooLong"  name="filterfname" value="">
+                            </th>
+                            <th>
+                                Date Added
+                                <br />
+                                <input type="text" class="tooLong"  name="filterfname" value="">
+                            </th>
+                            <th>
+                                Created By
+                                <br />
+                                <input type="text" class="tooLong"  name="filterfname" value="">
+                            </th>
+                            <th>
+                                Actions
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                    <tfoot>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+        <a href="#myModal" data-toggle="modal" class="btn btn-primary">Create New Element Variable</a>
+    </div>
+</div>
+

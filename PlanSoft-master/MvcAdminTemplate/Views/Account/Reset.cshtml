@@ -1,0 +1,34 @@
+﻿@model MvcAdminTemplate.Models.Account
+
+@{
+    ViewBag.Title = "Reset";
+}
+@Html.Partial("_LeftMenu")
+
+@using (Html.BeginForm())
+{
+    @Html.ValidationSummary(true, "Password Reset Failed");
+    <div>
+        <fieldset>
+            <legend>Reset Password</legend>
+            <div class="editor-label">@Html.LabelFor(u => u.Username)</div>
+            <div class="editor-field">
+                @Html.TextBoxFor(u => u.Username)
+                @Html.ValidationMessageFor(u => u.Username)
+            </div>
+
+            <div class="editor-label"><b>Password</b></div>
+            <div class="editor-field">
+                <input type="password" name="password1" />
+                @Html.ValidationMessageFor(u => u.Password)
+            </div>
+
+            <div class="editor-label"><b>Confirm Password</b></div>
+            <div class="editor-field">
+                <input type="password" name="password2" />
+                @Html.ValidationMessageFor(u => u.Password)
+            </div>
+            <input type="submit" value="Reset" />
+        </fieldset>
+    </div>
+}

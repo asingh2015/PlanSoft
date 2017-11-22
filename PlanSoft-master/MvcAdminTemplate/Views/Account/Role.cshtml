@@ -1,0 +1,37 @@
+﻿@model MvcAdminTemplate.Models.Account
+
+@{
+    ViewBag.Title = "Role";
+}
+@Html.Partial("_LeftMenu")
+
+@using (Html.BeginForm())
+{
+    @Html.ValidationSummary(true, "Role Update Failed");
+    <div>
+        <fieldset>
+            <legend>Update Role</legend>
+            <div class="editor-label">@Html.LabelFor(u => u.Username)</div>
+            <div class="editor-field">
+                @Html.TextBoxFor(u => u.Username)
+                @Html.ValidationMessageFor(u => u.Username)
+            </div>
+            @{
+                List<SelectListItem> listItems = new List<SelectListItem>();
+                listItems.Add(new SelectListItem
+                {
+                    Text = "User",
+                    Value = "User"
+                });
+                listItems.Add(new SelectListItem
+                {
+                    Text = "Admin",
+                    Value = "Admin"
+                });
+            }
+
+            @Html.DropDownListFor(u => u.Role, listItems, "-- Select Role --")
+            <input type="submit" value="Update Role" />
+        </fieldset>
+    </div>
+}

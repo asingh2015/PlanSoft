@@ -1,0 +1,206 @@
+﻿@{
+    ViewBag.Title = "Displays";
+}
+@Html.Partial("_LeftMenu")
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-colorpicker/2.5.1/css/bootstrap-colorpicker.css" />
+@section Scripts{
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-colorpicker/2.5.1/js/bootstrap-colorpicker.js"></script>
+
+    <script type="text/javascript">
+        function openFileDialog(elemId) {
+            var elem = document.getElementById(elemId);
+            if (elem && document.createEvent) {
+                var evt = document.createEvent("MouseEvents");
+                evt.initEvent("click", true, false);
+                elem.dispatchEvent(evt);
+            }
+        }
+    </script>
+
+    <script>
+        $('#customColors').on('click', function () {
+            $('#customColorsModal').modal('show');
+        });
+    </script>
+    <script>
+        $('#customFonts').on('click', function () {
+            $('#customFontsModal').modal('show');
+        });
+    </script>
+
+    <script>
+        $(function () {
+            $('#cp1').colorpicker('enable');
+            $('#cp2').colorpicker('enable');
+            $('#cp3').colorpicker('enable');
+            $('#cp4').colorpicker('enable');
+
+            $('#cp5').colorpicker('enable');
+            $('#cp6').colorpicker('enable');
+            $('#cp7').colorpicker('enable');
+            $('#cp8').colorpicker('enable');
+        });
+    </script>
+}
+
+<!--BEGIN CUSTOM COLOR THEME MODAL-->
+<div id="customColorsModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 id="myModalLabel" class="modal-title">Create Custom Font Theme</h4>
+            </div>
+            <div class="modal-body">
+                <h4>Section A</h4>
+                <div id="cp1" class="input-group colorpicker-component">
+                    <input type="text" value="" class="form-control" />
+                    <span class="input-group-addon"><i></i></span>
+                </div>
+                <br />
+                <h4>Section B</h4>
+                <div id="cp2" class="input-group colorpicker-component">
+                    <input type="text" value="" class="form-control" />
+                    <span class="input-group-addon"><i></i></span>
+                </div>
+                <br />
+                <h4>Section C</h4>
+                <div id="cp3" class="input-group colorpicker-component">
+                    <input type="text" value="" class="form-control" />
+                    <span class="input-group-addon"><i></i></span>
+                </div>
+                <br />
+                <h4>Section D</h4>
+                <div id="cp4" class="input-group colorpicker-component">
+                    <input type="text" value="" class="form-control" />
+                    <span class="input-group-addon"><i></i></span>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" id="save" class="btn btn-primary save" data-dismiss="modal">Save and Apply Theme</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!--END CUSTOM COLOR THEME MODAL-->
+
+<!--BEGIN CUSTOM FONT THEME MODAL-->
+<div id="customFontsModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 id="myModalLabel" class="modal-title">Create Custom Font Theme</h4>
+            </div>
+            <div class="modal-body">
+                <h4>Section A</h4>
+                <select name="fontSelect1">
+                    <option disabled selected> -- Select Font -- </option>
+                    <option value="font1">Font 1</option>
+                    <option value="font2">Font 2</option>
+                    <option value="font3">Font 3</option>
+                </select>
+                <div id="cp5" class="input-group colorpicker-component">
+                    <input type="text" value="" class="form-control" />
+                    <span class="input-group-addon"><i></i></span>
+                </div>
+                <br />
+                <h4>Section B</h4>
+                <select name="fontSelect2">
+                    <option disabled selected> -- Select Font -- </option>
+                    <option value="font1">Font 1</option>
+                    <option value="font2">Font 2</option>
+                    <option value="font3">Font 3</option>
+                </select>
+                <div id="cp6" class="input-group colorpicker-component">
+                    <input type="text" value="" class="form-control" />
+                    <span class="input-group-addon"><i></i></span>
+                </div>
+                <br />
+                <h4>Section C</h4>
+                <select name="fontSelect3">
+                    <option disabled selected> -- Select Font -- </option>
+                    <option value="font1">Font 1</option>
+                    <option value="font2">Font 2</option>
+                    <option value="font3">Font 3</option>
+                </select>
+                <div id="cp7" class="input-group colorpicker-component">
+                    <input type="text" value="" class="form-control" />
+                    <span class="input-group-addon"><i></i></span>
+                </div>
+                <br />
+                <h4>Section D</h4>
+                <select name="fontSelect4">
+                    <option disabled selected> -- Select Font -- </option>
+                    <option value="font1">Font 1</option>
+                    <option value="font2">Font 2</option>
+                    <option value="font3">Font 3</option>
+                </select>
+                <div id="cp8" class="input-group colorpicker-component">
+                    <input type="text" value="" class="form-control" />
+                    <span class="input-group-addon"><i></i></span>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" id="save" class="btn btn-primary save" data-dismiss="modal">Save and Apply Theme</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!--END CUSTOM FONT THEME MODAL-->
+
+<div class="col-md-10" style="margin-top:-1.3%;">
+    <div class="row">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <div class="text-muted bootstrap-admin-box-title">Display Customization</div>
+            </div>
+            <div class="bootstrap-admin-panel-content">
+                <h4>Upload Logo</h4>
+                <a href="#" class="btn btn-primary" onclick="openFileDialog('logoFile');"><i class="glyphicon glyphicon-folder-open"></i>  Open File</a>
+                <input type="file" id="logoFile" style="display:none" />
+                <a href="#" class="btn btn-default"><i class="glyphicon glyphicon-eye-open"></i> Preview</a>
+                <a href="#" class="btn btn-default"><i class="glyphicon glyphicon-ok"></i> Apply</a>
+                <br />
+                <br />
+                <h4>Select Color Theme</h4>
+                <select name="colorTheme">
+                    <option disabled selected> -- Select Theme -- </option>
+                    <option value="theme1">Theme 1</option>
+                    <option value="theme2">Theme 2</option>
+                    <option value="theme3">Theme 3</option>
+                </select>
+                <a href="#customColorsModal" id="customColors" class="btn btn-primary"><i class="glyphicon glyphicon-pencil"></i> Custom</a>
+                <a href="#" class="btn btn-default"><i class="glyphicon glyphicon-eye-open"></i> Preview</a>
+                <a href="#" class="btn btn-default"><i class="glyphicon glyphicon-ok"></i> Apply</a>
+                <br />
+                <br />
+                <h4>Select Font Theme</h4>
+                <select name="fontTheme">
+                    <option disabled selected> -- Select Theme -- </option>
+                    <option value="theme1">Theme 1</option>
+                    <option value="theme2">Theme 2</option>
+                    <option value="theme3">Theme 3</option>
+                </select>
+                <a href="#customFontsModal" id="customFonts" class="btn btn-primary"><i class="glyphicon glyphicon-pencil"></i> Custom</a>
+                <a href="#" class="btn btn-default"><i class="glyphicon glyphicon-eye-open"></i> Preview</a>
+                <a href="#" class="btn btn-default"><i class="glyphicon glyphicon-ok"></i> Apply</a>
+                <br />
+                <br />
+                <h4>Select Icon Theme</h4>
+                <select name="iconTheme">
+                    <option disabled selected> -- Select Theme -- </option>
+                    <option value="theme1">Theme 1</option>
+                    <option value="theme2">Theme 2</option>
+                    <option value="theme3">Theme 3</option>
+                </select>
+                <a href="#" class="btn btn-default"><i class="glyphicon glyphicon-eye-open"></i> Preview</a>
+                <a href="#" class="btn btn-default"><i class="glyphicon glyphicon-ok"></i> Apply</a>
+                <br />
+                <br />
+            </div>
+        </div>
+    </div>
+</div>

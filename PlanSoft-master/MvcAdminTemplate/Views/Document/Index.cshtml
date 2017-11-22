@@ -1,0 +1,36 @@
+﻿@model MvcAdminTemplate.Models.Document
+
+@{
+    ViewBag.Title = "Index";
+}
+
+
+
+<h2>Documents</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.DropDownListFor(x => x.selectedplan, new SelectList(Model.plans))
+    @Html.DropDownListFor(x => x.selectedtemplate, new SelectList(Model.templates))
+    <input type="submit" class="btn-default" value="Submit" />
+    
+    if(Model.planDetails != null && Model.planDetails.Count > 0)
+    {
+        if(Model.selectedtemplate == "Template 1")
+        {
+            @Html.Partial("_Template1", Model)
+        }
+        
+        if(Model.selectedtemplate == "Template 2")
+        {
+            @Html.Partial("_Template2", Model)
+        }
+        
+        if(Model.selectedtemplate == "Template 3")
+        {
+            @Html.Partial("_Template3", Model)
+        }
+    }
+}
+
+

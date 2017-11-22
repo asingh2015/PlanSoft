@@ -1,0 +1,272 @@
+﻿@{
+    ViewBag.Title = "Rules";
+}
+@Html.Partial("_LeftMenu")
+<!-- content -->
+<link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.13/css/jquery.dataTables.css">
+
+@section Scripts{
+    <script type="text/javascript" charset="utf8" src="//cdn.datatables.net/1.10.13/js/jquery.dataTables.js"></script>
+    <script>
+        $(document).ready(function () { drawTable() });
+
+        function drawTable() {
+            dataTable = $('#example').dataTable({
+                destroy: true,
+                bProcessing: true,
+                sAjaxSource: '@Url.Action("LoadRules", "Rules")',
+                "columnDefs": [{
+                    "targets": -1,
+                    "data": null,
+                    "defaultContent": "<button class =\"glyphicon glyphicon-pencil edit\"></button> <button class =\"glyphicon glyphicon-trash delete\"></button>"
+                }],
+            });
+            return true;
+        }
+
+        $(document).on("click", ".save", function () {
+            testStr = "([A-Za-z0-9])+"
+            var regex = new RegExp(testStr);
+            ruleName = $("#ruleName").val();
+            markedField = $("#markedField").val();
+            ruleCode = $("#ruleCode").val();
+            ruleCreator = "username";
+            test1 = regex.test(ruleCode);
+            test2 = regex.test(ruleName);
+            test3 = regex.test(markedField);
+            if (!test1 || !test2 || !test3) {
+                $('#addmessage').html("Fields must not be empty or have special characters");
+                return false;
+            }
+
+            $.ajax({
+                url: "/Rules/Add",
+                datatype: "text",
+                data: { 'RCode': $('#ruleCode').val(), 'RName': $('#ruleName').val(), 'markedField': $('#markedField').val(), 'RStatus': $('#ruleStatus').val(), 'Creator': "username" },
+                type: "POST",
+                success: function (data) {
+                    drawTable();
+                    $('#addmessage').html("");
+                    $('#myModal').modal('hide');
+                    return true;
+                },
+                error: function () {
+                    return false;
+                }
+            });
+        });
+
+        $("tbody").on("click", ".delete", function () {
+            delID = $(this).closest("tr").children('td:eq(0)').text();
+            $('#deleteModal').modal('show');
+        });
+        $(document).on("click", ".confirm", function () {
+            $.ajax({
+                url: "/Rules/Delete",
+                datatype: "text",
+                data: { 'RCode': delID },
+                type: "POST",
+                success: function (data) {
+                    drawTable();
+                    return true;
+                },
+                error: function () {
+                    return false;
+                }
+            });
+        });
+
+        function addVarSelect(divname) {
+            var dateArray;
+             $.ajax({
+                type: 'POST',
+                url: '@Url.Action("LoadRuleNames")',
+                success: function (data) {
+                    var newDiv = document.createElement('select');
+                    array = data.split(";")
+                    var html = "";
+                    for(var i = 0; i < array.length-1 ;i++)
+                    {
+                        html += "<option> " + array[i] + "</option>"
+                    }
+                    newDiv.innerHTML = html;
+                    document.getElementById(divname).appendChild(newDiv);
+                }
+            });
+        }
+
+        $("tbody").on("click", ".edit", function () {
+            $('#editMessage').html("");
+            ID = $(this).closest("tr").children('td:eq(0)').text();
+            Name = $(this).closest("tr").children('td:eq(1)').text();
+            MarkedField = $(this).closest("tr").children('td:eq(2)').text();
+            $('#editModal').modal('show');
+            $("#updateCode").val(ID);
+            $("#updateName").val(Name);
+            $("#updateField").val(MarkedField);
+            
+
+            $(document).on("click", ".update", function () {
+                testStr = "([A-Za-z0-9])+"
+                var regex = new RegExp(testStr);
+                test1 = regex.test($('#updateCode').val());
+                test2 = regex.test($('#updateName').val());
+                test3 = regex.test($('#updateField').val());
+                if (!test1 || !test2 || !test3) {
+                    $('#editMessage').html("Fields must not be empty or have special characters");
+                    return false;
+                }
+                $.ajax({
+                    url: "/Rules/Update",
+                    datatype: "text",
+                    data: { 'RCode': ID, 'newCode': $('#updateCode').val(), 'newName': $('#updateName').val(), 'newField': $('#updateField').val() },
+                    type: "POST",
+                    success: function (data) {
+                        drawTable();
+                        $('#editModal').modal('hide');
+                        return true;
+                    },
+                    error: function () {
+                        return false;
+                    }
+                });
+            });
+        });
+
+function addConditional(divname) {
+    var newDiv = document.createElement('select');
+    var html = "<option>IF</option>  <option>THEN MARK</option> <option>ELSE</option> <option>AS</option>";
+    newDiv.innerHTML = html;
+    document.getElementById(divname).appendChild(newDiv);
+}
+
+function addComparison(divname) {
+    var newDiv = document.createElement('select');
+    var html = "<option>></option>  <option><</option> <option>=</option> <option><=</option> <option>>=</option>";
+    newDiv.innerHTML = html;
+    document.getElementById(divname).appendChild(newDiv);
+}
+
+function addInput(divname) {
+    var newDiv = document.createElement('input');
+    var html = "";
+    newDiv.innerHTML = html;
+    document.getElementById(divname).appendChild(newDiv);
+}
+
+    </script>
+}
+<a href="#myModal" data-toggle="modal" class="btn btn-primary" style="margin-bottom:5%;margin-top:-2%">Rules Editor</a>
+
+<div id="myModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 id="myModalLabel" class="modal-title">Rule Builder</h4>
+            </div>
+            <div class="modal-body">
+                <div id="addmessage"></div>  
+                Rule Code:
+                <input id="ruleCode" />
+                <br />
+                Rule Name:
+                <input id="ruleName"/>
+                <br />
+                Rule Status:
+                <select id="ruleStatus" class="chzn-select" style="width: 100px">
+                    <option>Active</option>
+                    <option>Inactive</option>
+                </select>
+                <br />
+                Marked Field: 
+                <input id="markedField"/>
+                <br />
+                Created By: Username
+                <br />
+                <br />
+                <br />
+                <div id="select-container">
+                    <!--DYNAMIC STUFF GOES HERE-->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" onclick="addInput('select-container');">Add Input</button>
+                <button type="button" class="btn btn-default" onclick="addComparison('select-container');">Add Comparison</button>
+                <button type="button" class="btn btn-default" onclick="addConditional('select-container');">Add Conditional</button>
+                <button type="button" class="btn btn-default" onclick="addVarSelect('select-container');">Add Variable Select</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary save">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--BEGIN EDIT MODAL-->
+<div id="editModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 id="myModalLabel" class="modal-title">Add Element</h4>
+            </div>
+            <div class="modal-body">
+                <div id="editMessage"></div>
+                Element Code: <input id="updateCode" />
+                <br />
+                Element Name: <input id="updateName" />
+                <br />
+                Marked Field: <input id="updateField" />
+                <br />
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" id="update" class="btn btn-primary update">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!--END EDIT MODAL-->
+
+<!--BEGIN DELETE MODAL-->
+<div id="deleteModal" class="modal fade bs-example-modal-sm deleteModal" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-footer">
+                <h4 style="float:left" id="myModalLabel" class="modal-title">Confirm Delete</h4>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" id="confirm" class="btn btn-primary confirm" data-dismiss="modal">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!--END DELETE MODAL-->
+
+<div class="col-md-10" style="margin-top:-4%;">
+    <div class="row">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <div class="text-muted bootstrap-admin-box-title">Rules Table</div>
+            </div>
+            <div class="bootstrap-admin-panel-content">
+                <table class="table table-hover" id="example">
+                    <thead>
+                        <tr>
+                            <th>Rule Code</th>
+                            <th>Rule Name</th>
+                            <th>Marked Field</th>
+                            <th>Rule Status</th>
+                            <th>Created By</th>
+                            <th>Date Added</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                    <tfoot>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
